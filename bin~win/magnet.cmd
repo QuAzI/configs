@@ -1,0 +1,1 @@
+bash -c "aria2c magnet:?xt=urn:btih:%1"

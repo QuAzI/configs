@@ -1,0 +1,81 @@
+[merge]
+    tool = meld
+    guitool = meld
+[diff]
+    tool = vimdiff
+    guitool = meld
+[core]
+    autocrlf = false
+    sshcommand = C:/Windows/System32/OpenSSH/ssh.exe
+    editor = vim
+    commentChar = ";"
+[mergetool "meld"]
+    path = C:/Program Files (x86)/Meld/meld.exe
+    cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
+[difftool "meld"]
+    path = C:/Program Files (x86)/Meld/meld.exe
+    cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$REMOTE\"
+[pull]
+    rebase = false
+[fetch]
+    prune = false
+[rebase]
+    autoStash = false
+[winUpdater]
+    recentlySeenVersion = 2.20.1.windows.1
+[i18n]
+    filesEncoding = utf-8
+[color]
+    ui = true
+[http]
+    emptyAuth = true
+[credential]
+    helper = wincred
+[log]
+    date = local
+[pretty]
+    time = format:%C(auto,brightyellow)%ad%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%D%C(auto,reset)
+    time-hash = %C(auto,brightyellow)%ad %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
+    time-hash-author = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(92,0,54)%s
+    time-hash-author-branch = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(0,0,54)%s %C(auto,brightred)%S%C(auto,reset)
+    hash-branch = format:%C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
+    cmedium = format:%C(auto,yellow)commit %H%C(auto,reset)%nCommit:     %cn <%ce>%nCommitDate: %cd%n%n%w(0,4,4)%s%n%+b
+[alias]
+    # get commits with timestamps to fill time report
+    report = "!me=$(git config user.email); git log --all --since=1 --author-date-order --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
+    
+    # pretty changes list
+    changes = log --no-merges --decorate=short --pretty=time-hash-author-branch --date=format:'%Y-%m-%d %H:%M:%S'
+    changes-my = "!me=$(git config user.email); git changes --pretty=time-hash --author=\"$me\""
+    
+    # show which commits should to be deployed with branches
+    branches-to-deploy = log --all --not master --no-merges --since=4.weeks --pretty=hash-branch
+    branches-to-deploy-my = "!me=$(git config user.email); git branches-to-deploy --author=\"$me\""
+    
+    # show commits which is not pushed (can be squashed or rebased)
+    commits-to-push = cherry -v @{upstream}
+    commits-to-push-count = !git commits-to-push | wc -l
+    
+    commits-to-deploy = log --no-merges --not master --pretty=time-hash-author --date=format:'%Y-%m-%d' origin/master...HEAD
+    commits-to-deploy-my = !git commits-to-deploy --pretty=time-hash --date=format:'%Y-%m-%d %H:%M:%S'  --author=\"$(git config --get user.email)\"
+
+    # fixup can be squashed automatically by `git rebase -i --autosquash HEAD~3`
+    fixup = !git commit --fixup=$(git rev-parse HEAD)    
+    
+    # remove changes from index (rollback `git add`)
+    unstage = reset HEAD --
+    
+    uncommit = reset --soft HEAD~1
+    # reset --soft @~
+
+    remote-branches-by-committer = !git for-each-ref --format=\"%(color:yellow)%(committerdate:short)  %(align:24,left)%(color:green)%(authorname)%(end)  %(color:reset)%(refname:short)\" --sort='-committerdate' refs/remotes/origin
+    remote-branches-my = !git remote-branches-by-committer | grep \"$(git config --get user.name)\"
+    
+    # to remove obsoleted branches use
+    # git push origin -d <branch>
+    
+    # git branch -vr --sort=-committerdate
+    
+    # bisect
+    bidiff = !git diff HEAD..$(cat ".git/BISECT_START")
+    bilog = !git log --pretty=oneline --simplify-by-decoration $(cat ".git/BISECT_START")
