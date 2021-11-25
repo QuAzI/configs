@@ -56,7 +56,7 @@
     commits-to-push = cherry -v @{upstream}
     commits-to-push-count = !git commits-to-push | wc -l
     
-    commits-to-deploy = log --no-merges --not master --pretty=time-hash-author --date=format:'%Y-%m-%d' origin/master...HEAD
+    commits-to-deploy = log --no-merges --pretty=time-hash-author --date=format:'%Y-%m-%d' origin/master...HEAD
     commits-to-deploy-my = !git commits-to-deploy --pretty=time-hash --date=format:'%Y-%m-%d %H:%M:%S'  --author=\"$(git config --get user.email)\"
 
     # fixup can be squashed automatically by `git rebase -i --autosquash HEAD~3`
