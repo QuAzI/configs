@@ -5,7 +5,7 @@
     tool = vimdiff
     guitool = meld
 [core]
-    autocrlf = false
+    autocrlf = true
     sshcommand = C:/Windows/System32/OpenSSH/ssh.exe
     editor = vim
     commentChar = ";"
@@ -34,7 +34,7 @@
 [log]
     date = local
 [pretty]
-    time = format:%C(auto,brightyellow)%ad%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%D%C(auto,reset)
+    time = format:%C(auto,brightyellow)%ad%C(auto,reset)\t%w(0,0,24)%s
     time-hash = %C(auto,brightyellow)%ad %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
     time-hash-author = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(92,0,54)%s
     time-hash-author-branch = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(0,0,54)%s %C(auto,brightred)%S%C(auto,reset)
