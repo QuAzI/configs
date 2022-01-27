@@ -1,3 +1,7 @@
+[credential]
+    helper = wincred
+[http]
+    emptyAuth = true
 [merge]
     tool = meld
     guitool = meld
@@ -5,7 +9,7 @@
     tool = vimdiff
     guitool = meld
 [core]
-    autocrlf = false
+    autocrlf = true
     sshcommand = C:/Windows/System32/OpenSSH/ssh.exe
     editor = vim
     commentChar = ";"
@@ -27,25 +31,21 @@
     filesEncoding = utf-8
 [color]
     ui = true
-[http]
-    emptyAuth = true
-[credential]
-    helper = wincred
 [log]
     date = local
 [pretty]
-    time = format:%C(auto,brightyellow)%ad%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%D%C(auto,reset)
+    time = %C(auto,brightyellow)%ad%C(auto,reset)\t%w(0,0,24)%s
     time-hash = %C(auto,brightyellow)%ad %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
     time-hash-author = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(92,0,54)%s
-    time-hash-author-branch = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(0,0,54)%s %C(auto,brightred)%S%C(auto,reset)
-    hash-branch = format:%C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
-    cmedium = format:%C(auto,yellow)commit %H%C(auto,reset)%nCommit:     %cn <%ce>%nCommitDate: %cd%n%n%w(0,4,4)%s%n%+b
+    time-hash-author-branch = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(0,0,54)%s %C(auto,brightred)%d%C(auto,reset)
+    hash-branch = %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
+    cmedium = %C(auto,yellow)commit %H%C(auto,reset)%nCommit:     %cn <%ce>%nCommitDate: %cd%n%n%w(0,4,4)%s%n%+b
 [alias]
     # get commits with timestamps to fill time report
     report = "!me=$(git config user.email); git log --all --since=1 --author-date-order --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
     
     # pretty changes list
-    changes = log --no-merges --decorate=short --pretty=time-hash-author-branch --date=format:'%Y-%m-%d %H:%M:%S'
+    changes = log --no-merges --pretty=time-hash-author-branch --date=format:'%Y-%m-%d %H:%M:%S'
     changes-my = "!me=$(git config user.email); git changes --pretty=time-hash --author=\"$me\""
     
     # show which commits should to be deployed with branches
