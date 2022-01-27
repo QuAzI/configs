@@ -9,7 +9,7 @@
     tool = vimdiff
     guitool = meld
 [core]
-    autocrlf = true
+    autocrlf = false
     sshcommand = C:/Windows/System32/OpenSSH/ssh.exe
     editor = vim
     commentChar = ";"
