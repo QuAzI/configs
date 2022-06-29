@@ -3,7 +3,7 @@
 [http]
     emptyAuth = true
 [merge]
-    tool = meld
+    tool = vimdiff
     guitool = meld
 [diff]
     tool = vimdiff
@@ -58,6 +58,8 @@
     
     commits-to-deploy = log --no-merges --pretty=time-hash-author --date=format:'%Y-%m-%d' origin/master...HEAD
     commits-to-deploy-my = !git commits-to-deploy --pretty=time-hash --date=format:'%Y-%m-%d %H:%M:%S'  --author=\"$(git config --get user.email)\"
+	
+    files-to-deploy = diff --name-only origin/master...HEAD
 
     # fixup can be squashed automatically by `git rebase -i --autosquash HEAD~3`
     fixup = !git commit --fixup=$(git rev-parse HEAD)    
