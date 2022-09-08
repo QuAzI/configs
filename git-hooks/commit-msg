@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# An example hook script to check the commit log message.
+# Called by "git commit" with one argument, the name of the file
+# that has the commit message.  The hook should exit with non-zero
+# status after issuing an appropriate message if it wants to stop the
+# commit.  The hook is allowed to edit the commit message file.
+#
+# To enable this hook, rename this file to "commit-msg".
+
+# Uncomment the below to add a Signed-off-by line to the message.
+# Doing this in a hook is a bad idea in general, but the prepare-commit-msg
+# hook is more suited to it.
+#
+# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+
+# This example catches duplicate Signed-off-by lines.
+
+message="$(sed -n 1p "$1" | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//')"
+
+# prevent non informative commit descriptions (too short)
+if (( $(echo "$message" | wc -m) < 7 )) ; then
+    echo Commit title too short. Please describe properly! >&2
+    exit 1
+fi
+
+shopt -s nocasematch
+# prevent non informative commit descriptions (has no sense)
+for x in \
+    "Bug fix" \
+	"Bug fixes" \
+	"Bug fixing" \
+	"bugfixing" \
+	"bugs" \
+	"Bugs fix" \
+	"Code fix" \
+	"Comment" \
+	"Commit" \
+	"Customer support" \
+	"Dirty hotfix" \
+	"Fix" \
+	"Fixes" \
+	"Fixing" \
+	"hf" \
+	"Hot fix" \
+	"hot fixes" \
+	"hotfix" \
+	"Merge" \
+	"sf" \
+	"Small changes" \
+	"Small fix" \
+	"[fixes]" \
+	"[fix]" \
+	"[merge]"; 
+do
+	if [[ $x = "$message" ]]; then
+		echo Commit title non informative. Please describe properly! >&2
+		exit 1
+	fi
+done
