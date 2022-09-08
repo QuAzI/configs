@@ -1,40 +1,58 @@
 [credential]
     helper = wincred
+
+[init]
+    templateDir = ~/.git-template
+
 [http]
     emptyAuth = true
+
 [merge]
     tool = vimdiff
     guitool = meld
+
 [diff]
     tool = vimdiff
     guitool = meld
+
 [core]
     autocrlf = false
     sshcommand = C:/Windows/System32/OpenSSH/ssh.exe
     editor = vim
     commentChar = ";"
+
 [mergetool "meld"]
     path = C:/Program Files (x86)/Meld/meld.exe
     cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
+
 [difftool "meld"]
     path = C:/Program Files (x86)/Meld/meld.exe
     cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$REMOTE\"
+
 [pull]
     rebase = false
+
 [fetch]
     prune = false
+
 [push]
     autoSetupRemote = true
+
 [rebase]
     autoStash = false
+
 [winUpdater]
     recentlySeenVersion = 2.20.1.windows.1
+
 [i18n]
     filesEncoding = utf-8
+
 [color]
     ui = true
+
 [log]
     date = local
+
 [pretty]
     time = %C(auto,brightyellow)%ad%C(auto,reset)\t%w(0,0,24)%s
     time-hash = %C(auto,brightyellow)%ad %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
@@ -42,6 +60,7 @@
     time-hash-author-branch = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(0,0,54)%s %C(auto,brightred)%d%C(auto,reset)
     hash-branch = %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
     cmedium = %C(auto,yellow)commit %H%C(auto,reset)%nCommit:     %cn <%ce>%nCommitDate: %cd%n%n%w(0,4,4)%s%n%+b
+
 [alias]
     # get commits with timestamps to fill time report
     report = "!me=$(git config user.email); git log --all --since=1 --author-date-order --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
