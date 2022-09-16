@@ -2,7 +2,7 @@
     helper = wincred
 
 [init]
-    templateDir = ~/.git-template
+	templateDir = ~/.git-template
 
 [http]
     emptyAuth = true
@@ -108,4 +108,7 @@
     # But we don't have sprint info in tasks or cli tools
     # So best choise to use week number
 
-    branch-for-fast-track = !git checkout -b feature/fasttrack-`date +%Yw%U` master
+    branch-for-fast-track = !git checkout -b feature/fasttrack-`date +%Yw%U` origin/master
+	
+	kube-prepare-ns = !git rev-parse --abbrev-ref HEAD | sed -r 's/(feature|dev|hotfix)\\///g'
+	kube-namespace-set = !kubectl config set-context --current --namespace=$(git kube-prepare-ns)
