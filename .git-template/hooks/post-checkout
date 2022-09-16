@@ -1,0 +1,10 @@
+#!/bin/sh
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# Try to set current Kubernetes Namespace same as branch for staging
+valid_branch_regex="^(dev|feature|hotfix|bugfix|prerelease|release)\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+if [[ $branch =~ $valid_branch_regex ]]
+then
+    git kube-namespace-set
+fi
