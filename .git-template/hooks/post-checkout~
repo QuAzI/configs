@@ -6,5 +6,6 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 valid_branch_regex="^(dev|feature|hotfix|bugfix|prerelease|release)\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
 if [[ $branch =~ $valid_branch_regex ]]
 then
+    echo Kubernetes namespace set to: $(git kube-prepare-ns)
     git kube-namespace-set
 fi
