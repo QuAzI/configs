@@ -124,3 +124,10 @@
     
     kube-prepare-ns = !git rev-parse --abbrev-ref HEAD | sed -r 's/(feature|dev|hotfix)\\///g'
     kube-namespace-set = !kubectl config set-context --current --namespace=$(git kube-prepare-ns)
+    
+    # Create GitLab Merge Request (Pull Request)
+    parent-branch = "!git name-rev $(git merge-base origin/master --fork-point) --name-only | sed 's@remotes/@@' | sed 's@origin/@@' | sed 's@,.*@@'"
+    last-commit = "!git log -1 --pretty=%B | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//'"
+    merge-request = !git push -o merge_request.create -o merge_request.target=$(git parent-branch) -o merge_request.remove_source_branch -o merge_request.squash
+    # -o merge_request.title=\\\"$(git last-commit)\\\"  -- throws "error: src refspec case does not match any"
+    # -o merge_request.squash  -- not work
