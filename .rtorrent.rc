@@ -1,0 +1,3 @@
+method.insert = finalize, simple, "d.close=; execute=rm,$d.loaded_file= ; execute=mkdir,-p,./completed/ ; d.directory.set = ./completed/ ; execute=mv,-u, $d.base_path=, ./completed/"
+method.set_key = event.download.finished, move_complete, "finalize="
+
