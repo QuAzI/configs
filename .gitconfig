@@ -30,10 +30,10 @@
     cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$REMOTE\"
 
 [pull]
-    rebase = false
+    rebase = true
 
 [fetch]
-    prune = false
+    prune = true
 
 [push]
     autoSetupRemote = true
@@ -52,6 +52,12 @@
 
 [rebase]
     autoStash = false
+
+[rerere]
+	enabled = true
+
+[branch "master"]
+	mergeoptions = --no-ff
 
 [winUpdater]
     recentlySeenVersion = 2.20.1.windows.1
@@ -75,7 +81,8 @@
 
 [alias]
     # get commits with timestamps to fill time report
-    report = "!me=$(git config user.email); git log --all --since=1 --author-date-order --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
+    #report = "!me=$(git config user.email); git log --all --since=1 --author-date-order --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
+    report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
     
     # pretty changes list
     changes = log --no-merges --pretty=time-hash-author-branch --date=format:'%Y-%m-%d %H:%M:%S'
@@ -89,7 +96,7 @@
     commits-to-push = cherry -v @{upstream}
     commits-to-push-count = !git commits-to-push | wc -l
     
-    commits-to-deploy = log --no-merges --pretty=time-hash-author --date=format:'%Y-%m-%d' origin/master...HEAD
+    commits-to-deploy = log --no-merges --pretty=time-hash-author --date=format:'%Y-%m-%d' origin/master..HEAD
     commits-to-deploy-my = !git commits-to-deploy --pretty=time-hash --date=format:'%Y-%m-%d %H:%M:%S'  --author=\"$(git config --get user.email)\"
     
     files-to-deploy = diff --name-only origin/master...HEAD
@@ -120,14 +127,22 @@
     # But we don't have sprint info in tasks or cli tools
     # So best choise to use week number
 
-    branch-for-fast-track = !git checkout -b feature/fasttrack-`date +%Yw%U` origin/master
+    branch-for-fast-track-set = !git checkout -b feature/fasttrack-`date +%Yw%U` origin/master
     
     kube-prepare-ns = !git rev-parse --abbrev-ref HEAD | sed -r 's/(feature|dev|hotfix)\\///g'
     kube-namespace-set = !kubectl config set-context --current --namespace=$(git kube-prepare-ns)
     
+    kube-verify-server = !kubectl get ns $(git kube-prepare-ns) -o jsonpath='{.metadata.labels.server}'
+    
     # Create GitLab Merge Request (Pull Request)
-    parent-branch = "!git name-rev $(git merge-base origin/master --fork-point) --name-only | sed 's@remotes/@@' | sed 's@origin/@@' | sed 's@,.*@@'"
+	parent-branch-old = "!git name-rev $(git merge-base origin/master --fork-point) --name-only | sed 's@remotes/@@' | sed 's@origin/@@' | sed 's@,.*@@'" | sed -e s/[~^].*//
+	parent-branch = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' #"
+	parent-branch-3 = "!git show-branch -a | grep '\\*' | grep -v `git rev-parse --abbrev-ref HEAD` | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//'"
+	parent-branch-4 = "!git show-branch | sed 's/].*//' | grep '\\*' | grep -v '$(git rev-parse --abbrev-ref HEAD)' | head -n1 | sed 's/^.*\\[//'"
+	
     last-commit = "!git log -1 --pretty=%B | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//'"
-    merge-request = !git push -o merge_request.create -o merge_request.target=$(git parent-branch) -o merge_request.remove_source_branch -o merge_request.squash
+    merge-request = "!echo git push -o merge_request.create -o merge_request.target=${1:-$(git parent-branch)} -o merge_request.remove_source_branch -o merge_request.squash"
     # -o merge_request.title=\\\"$(git last-commit)\\\"  -- throws "error: src refspec case does not match any"
     # -o merge_request.squash  -- not work
+	
+    release-log = "!git shortlog --no-merges main --not $(git describe --tags --abbrev=0)"

@@ -1,21 +1,26 @@
 set nocompatible
 
+" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 " Vundle plugin manager
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 set rtp+=~/.vim/bundle/YouCompleteMe
 call vundle#begin()
 
+" YCM build https://github.com/ycm-core/YouCompleteMe
+" cd ~/.vim/bundle/YouCompleteMe
+" ./install.py
+
 Plugin 'gmarik/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'preservim/nerdtree'
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'mattn/emmet-vim'  " html zen mode by '<c-y>,'
 Plugin 'morhetz/gruvbox'
 Plugin 'preservim/tagbar'
 Plugin 'vim-syntastic/syntastic'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'skanehira/docker-compose.vim'
+" Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 
 call vundle#end()
 filetype plugin indent on
@@ -53,11 +58,11 @@ set ls=2
 
 " Powerline
 " If installed using pip just add
-python3 from powerline.vim import setup as powerline_setup
-python3 powerline_setup()
-python3 del powerline_setup
+"python3 from powerline.vim import setup as powerline_setup
+"python3 powerline_setup()
+"python3 del powerline_setup
 
-" let g:ycm_python_binary_path = 'python'
+let g:ycm_python_binary_path = 'python'
 let g:ycm_autoclose_preview_window_after_completion=1
 
 let g:syntastic_python_checkers = ['python', 'flake8']
