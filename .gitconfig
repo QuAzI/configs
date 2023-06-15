@@ -80,6 +80,9 @@
     cmedium = %C(auto,yellow)commit %H%C(auto,reset)%nCommit:     %cn <%ce>%nCommitDate: %cd%n%n%w(0,4,4)%s%n%+b
 
 [alias]
+    # git push --force is very dangerous, we need options to safe commits
+    push-force-safe = push --force-with-lease --force-if-includes
+
     # get commits with timestamps to fill time report
     #report = "!me=$(git config user.email); git log --all --since=1 --author-date-order --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
     report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
