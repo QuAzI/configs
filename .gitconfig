@@ -42,9 +42,7 @@
     default = simple
     
 [branch]
-    # --track automatic setup is done only when the starting point is a remote-tracking branch 
-    # and the new branch has the same name as the remote branch
-    autoSetupMerge = simple
+	autosetupmerge = true
 
 [checkout]
     # always checkout remote branches from there if <branch> is ambiguous but exists on the origin remote
@@ -84,8 +82,7 @@
     push-force-safe = push --force-with-lease --force-if-includes
 
     # get commits with timestamps to fill time report
-    #report = "!me=$(git config user.email); git log --all --since=1 --author-date-order --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
-    report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\""
+    report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\" --color=always | uniq | grep `date '+%Y-%m'`"
     
     # pretty changes list
     changes = log --no-merges --pretty=time-hash-author-branch --date=format:'%Y-%m-%d %H:%M:%S'
@@ -138,11 +135,8 @@
     kube-verify-server = !kubectl get ns $(git kube-prepare-ns) -o jsonpath='{.metadata.labels.server}'
     
     # Create GitLab Merge Request (Pull Request)
-	parent-branch-old = "!git name-rev $(git merge-base origin/master --fork-point) --name-only | sed 's@remotes/@@' | sed 's@origin/@@' | sed 's@,.*@@'" | sed -e s/[~^].*//
-	parent-branch = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' #"
-	parent-branch-3 = "!git show-branch -a | grep '\\*' | grep -v `git rev-parse --abbrev-ref HEAD` | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//'"
-	parent-branch-4 = "!git show-branch | sed 's/].*//' | grep '\\*' | grep -v '$(git rev-parse --abbrev-ref HEAD)' | head -n1 | sed 's/^.*\\[//'"
-	
+    parent-branch = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' #"
+    
     last-commit = "!git log -1 --pretty=%B | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//'"
     merge-request = "!echo git push -o merge_request.create -o merge_request.target=${1:-$(git parent-branch)} -o merge_request.remove_source_branch -o merge_request.squash"
     # -o merge_request.title=\\\"$(git last-commit)\\\"  -- throws "error: src refspec case does not match any"
