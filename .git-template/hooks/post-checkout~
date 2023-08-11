@@ -7,5 +7,6 @@ valid_branch_regex="^(feature)\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
 if [[ $branch =~ $valid_branch_regex ]]
 then
     echo Kubernetes namespace set to: $(git kube-prepare-ns)
+    kubectl config use-context staging
     git kube-namespace-set
 fi
