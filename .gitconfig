@@ -82,7 +82,7 @@
     push-force-safe = push --force-with-lease --force-if-includes
 
     # get commits with timestamps to fill time report
-    report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\" --color=always | uniq | grep `date '+%Y-%m'`"
+    report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\" --color=always | sort| uniq | grep `date '+%Y-%m'`"
     
     # pretty changes list
     changes = log --no-merges --pretty=time-hash-author-branch --date=format:'%Y-%m-%d %H:%M:%S'
