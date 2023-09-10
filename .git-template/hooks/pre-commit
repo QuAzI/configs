@@ -1,12 +1,11 @@
 #!/bin/sh
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
+branch="$(git branch --show-current)"
 
-
-# prevent commits directly to master
-if [ "$branch" = "master" ]; then
-  echo "You can't commit directly to master branch" >&2
-  exit 1
+# commits directly to master allowed only if no other branches present
+master_branch_regex="^(master|main)$"
+if [[ $branch =~ $master_branch_regex && `git branch --list -a` = '' ]]; then
+  exit 0
 fi
 
 # prevent commits to wrongly named branches
