@@ -118,4 +118,11 @@ fi
 
 alias vi='vim'
 export EDITOR='vim'
+export TEST_BEFORE=test
 
+nohup '/usr/bin/socat \
+    UNIX-LISTEN:"$HOME/.ssh/wsl-ssh-agent.sock",fork \
+    EXEC:"$(which npiperelay.exe) -ei -s //./pipe/openssh-ssh-agent",nofork 2>&1' &
+
+export SSH_AUTH_SOCK=$HOME/.ssh/wsl-ssh-agent.sock
+export TEST_AFTER=test

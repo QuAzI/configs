@@ -1,0 +1,10 @@
+#!/bin/sh
+
+push_command=$(ps -ocommand= -p $PPID)
+
+is_destructive='force|\-f'
+
+if [[ $push_command =~ $is_destructive ]]; then
+  echo '[Policy] Never force push! Use `git push --force-with-lease --force-if-includes` instead!'
+  exit 1
+fi

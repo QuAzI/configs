@@ -1,9 +1,16 @@
 [credential]
     helper = wincred
 
+[commit]
+    gpgsign = false
+
+[gpg]
+    format = ssh
+
 [init]
     templateDir = ~/.git-template
 
+	defaultBranch = master
 [http]
     emptyAuth = true
 
@@ -23,7 +30,12 @@
 
 [mergetool "meld"]
     path = C:/Program Files (x86)/Meld/meld.exe
-    cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
+    # cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
+	cmd = \"C:/Program Files (x86)/Meld/meld.exe\" --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
+	
+[mergetool "idea"]
+    cmd = idea merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+    trustExitCode = true
 
 [difftool "meld"]
     path = C:/Program Files (x86)/Meld/meld.exe
@@ -142,4 +154,7 @@
     # -o merge_request.title=\\\"$(git last-commit)\\\"  -- throws "error: src refspec case does not match any"
     # -o merge_request.squash  -- not work
 	
-    release-log = "!git shortlog --no-merges main --not $(git describe --tags --abbrev=0)"
+    release-log = "!git shortlog --no-merges master --not $(git describe --tags --abbrev=0)"
+
+    remaster = "!git fetch && git rebase origin/master"
+
