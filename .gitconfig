@@ -14,32 +14,39 @@
 [http]
     emptyAuth = true
 
-[merge]
-    tool = vimdiff
-    guitool = meld
-
-[diff]
-    tool = vimdiff
-    guitool = meld
-
+[init]
+    defaultBranch = master
+    templateDir = ~/.git-template	
+	
 [core]
     autocrlf = false
     sshcommand = C:/Windows/System32/OpenSSH/ssh.exe
     editor = vim
     commentChar = ";"
 
+[diff]
+    tool = vimdiff
+    guitool = rider
+
+[difftool "meld"]
+    path = C:/Program Files (x86)/Meld/meld.exe
+    cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$REMOTE\"
+	
+[difftool "rider"]
+    cmd = \"c:/Program Files/JetBrains/JetBrains Rider 2022.1/bin/rider64.exe\" diff \"$LOCAL\" \"$REMOTE\"
+
+[merge]
+    tool = vimdiff
+    guitool = rider
+
 [mergetool "meld"]
     path = C:/Program Files (x86)/Meld/meld.exe
     # cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
 	cmd = \"C:/Program Files (x86)/Meld/meld.exe\" --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
 	
-[mergetool "idea"]
-    cmd = idea merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
+[mergetool "rider"]
+    cmd = \"c:/Program Files/JetBrains/JetBrains Rider 2022.1/bin/rider64.exe\" merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
     trustExitCode = true
-
-[difftool "meld"]
-    path = C:/Program Files (x86)/Meld/meld.exe
-    cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$REMOTE\"
 
 [pull]
     rebase = true
