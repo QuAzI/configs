@@ -1,93 +1,67 @@
 [credential]
     helper = wincred
-
 [commit]
     gpgsign = false
-
 [gpg]
     format = ssh
-
-[init]
-    templateDir = ~/.git-template
-
-	defaultBranch = master
 [http]
     emptyAuth = true
-
 [init]
     defaultBranch = master
-    templateDir = ~/.git-template	
-	
+    templateDir = ~/.git-template
 [core]
     autocrlf = false
     sshcommand = C:/Windows/System32/OpenSSH/ssh.exe
     editor = vim
     commentChar = ";"
-
+    longpaths = true
 [diff]
     tool = vimdiff
-    guitool = rider
-
+    guitool = meld
 [difftool "meld"]
-    path = C:/Program Files (x86)/Meld/meld.exe
-    cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$REMOTE\"
-	
+    path = C:/Program Files/Meld/meld.exe
+    cmd = \"C:/Program Files/Meld/meld.exe\" \"$LOCAL\" \"$REMOTE\"
 [difftool "rider"]
     cmd = \"c:/Program Files/JetBrains/JetBrains Rider 2022.1/bin/rider64.exe\" diff \"$LOCAL\" \"$REMOTE\"
-
 [merge]
     tool = vimdiff
-    guitool = rider
-
+    guitool = meld
 [mergetool "meld"]
-    path = C:/Program Files (x86)/Meld/meld.exe
-    # cmd = \"C:/Program Files (x86)/Meld/meld.exe\" \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
-	cmd = \"C:/Program Files (x86)/Meld/meld.exe\" --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
-	
+    path = C:/Program Files/Meld/meld.exe
+    cmd = \"C:/Program Files/Meld/meld.exe\" --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
 [mergetool "rider"]
     cmd = \"c:/Program Files/JetBrains/JetBrains Rider 2022.1/bin/rider64.exe\" merge \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\"
     trustExitCode = true
-
 [pull]
     rebase = true
-
 [fetch]
     prune = true
-
 [push]
     autoSetupRemote = true
-    
+
     # refuses to push when the local and remote branch do not match exactly
     default = simple
-    
 [branch]
-	autosetupmerge = true
-
+    autosetupmerge = true
 [checkout]
     # always checkout remote branches from there if <branch> is ambiguous but exists on the origin remote
     defaultRemote = origin
-
 [rebase]
     autoStash = false
-
+    autosquash = false
+    updateRefs = false
 [rerere]
-	enabled = true
-
+    enabled = true
 [branch "master"]
-	mergeoptions = --no-ff
-
+    mergeoptions = --no-ff
 [winUpdater]
     recentlySeenVersion = 2.20.1.windows.1
-
 [i18n]
     filesEncoding = utf-8
-
 [color]
     ui = true
-
 [log]
     date = local
-
 [pretty]
     time = %C(auto,brightyellow)%ad%C(auto,reset)\t%w(0,0,24)%s
     time-hash = %C(auto,brightyellow)%ad %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
@@ -95,73 +69,40 @@
     time-hash-author-branch = %C(auto,brightyellow)%ad %C(auto,yellow)%h %C(auto,green)%<(22,trunc)%cn %C(auto,reset)%w(0,0,54)%s %C(auto,brightred)%d%C(auto,reset)
     hash-branch = %C(auto,yellow)%h%C(auto,reset) %w(0,0,24)%s %C(auto,brightred)%S%C(auto,reset)%+b
     cmedium = %C(auto,yellow)commit %H%C(auto,reset)%nCommit:     %cn <%ce>%nCommitDate: %cd%n%n%w(0,4,4)%s%n%+b
-
 [alias]
-    # git push --force is very dangerous, we need options to safe commits
+    get-master = "!git symbolic-ref refs/remotes/origin/HEAD | sed 's/^refs\\/remotes\\///'"
     push-force-safe = push --force-with-lease --force-if-includes
-
-    # get commits with timestamps to fill time report
-    report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\" --color=always | sort| uniq | grep `date '+%Y-%m'`"
-    
-    # pretty changes list
+    remaster = !git fetch && git rebase $(git get-master)
+    uncommit = reset --soft HEAD~1
+    release-log = !git shortlog --no-merges $(git get-master) --not $(git describe --tags --abbrev=0)
+    issue = "!git symbolic-ref --short HEAD | grep -oP '^MMC-\\d+'"
+    issue-title = "!jira issue list --plain --no-headers --columns key,summary -q\"key = $(git issue)\" | sed 's/^\\([A-Z]*-[0-9]*\\)\\s*/\\1: /'"
+    issue-view = !jira issue view --comments 0 --plain $(git issue)
+    issue-open = !jira open $(git issue)
+    #report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\\"$me\\" --color=always | sort| uniq | grep `date '+%Y-%m'`"
+    report = "!me=$(git config user.email); git log --all --author-date-order --since=1 --reverse --no-merges --pretty=time --date=format:'%Y-%m-%d %H:%M:%S' --author=\"$me\" --color=always | sort | uniq | grep `date '+%Y-%m'`"
+    report-demo = "!me=$(git config user.email); git log --all --since='14 days ago' --no-merges --pretty=format:'%s' --date=format:'%Y-%m-%d' --author=\"$me\" | sort | uniq"
     changes = log --no-merges --pretty=time-hash-author-branch --date=format:'%Y-%m-%d %H:%M:%S'
-    changes-my = "!me=$(git config user.email); git changes --pretty=time-hash --author=\"$me\""
-    
-    # show which commits should to be deployed with branches
+    changes-my = "!me=$(git config user.email); git changes --pretty=time-hash --author=\\"$me\\""
     branches-to-deploy = log --all --not master --no-merges --since=4.weeks --pretty=hash-branch
-    branches-to-deploy-my = "!me=$(git config user.email); git branches-to-deploy --author=\"$me\""
-    
-    # show commits which is not pushed (can be squashed or rebased)
+    branches-to-deploy-my = "!me=$(git config user.email); git branches-to-deploy --author=\\"$me\\""
     commits-to-push = cherry -v @{upstream}
     commits-to-push-count = !git commits-to-push | wc -l
-    
-    commits-to-deploy = log --no-merges --pretty=time-hash-author --date=format:'%Y-%m-%d' origin/master..HEAD
+    commits-to-deploy = log --no-merges --pretty=time-hash-author --date=format:'%Y-%m-%d' $(git get-master)..HEAD
     commits-to-deploy-my = !git commits-to-deploy --pretty=time-hash --date=format:'%Y-%m-%d %H:%M:%S'  --author=\"$(git config --get user.email)\"
-    
-    files-to-deploy = diff --name-only origin/master...HEAD
-
-    # fixup can be squashed automatically by `git rebase -i --autosquash HEAD~3`
-    fixup = !git commit --fixup=$(git rev-parse HEAD)    
-    
-    # remove changes from index (rollback `git add`)
+    files-to-deploy = diff --name-only $(git get-master)...HEAD
+    fixup = !git commit --fixup=$(git rev-parse HEAD)
     unstage = reset HEAD --
-    
-    uncommit = reset --soft HEAD~1
-    # reset --soft @~
-
     remote-branches-by-committer = !git for-each-ref --format=\"%(color:yellow)%(committerdate:short)  %(align:24,left)%(color:green)%(authorname)%(end)  %(color:reset)%(refname:short)\" --sort='-committerdate' refs/remotes/origin
     remote-branches-my = !git remote-branches-by-committer | grep \"$(git config --get user.name)\"
-    
-    # to remove obsoleted branches use
-    # git push origin -d <branch>
-    
-    # git branch -vr --sort=-committerdate
-    
-    # bisect
-    bidiff = !git diff HEAD..$(cat ".git/BISECT_START")
-    bilog = !git log --pretty=oneline --simplify-by-decoration $(cat ".git/BISECT_START")
-    
-    # Kubernetes name requirements: [a-z0-9]([-a-z0-9]*[a-z0-9])?
-    # Fast track naming (described in Confluence): feature/sprint-jun23-editor
-    # But we don't have sprint info in tasks or cli tools
-    # So best choise to use week number
-
-    branch-for-fast-track-set = !git checkout -b feature/fasttrack-`date +%Yw%U` origin/master
-    
+    bidiff = !git diff HEAD..$(cat.git/BISECT_START)
+    bilog = !git log --pretty=oneline --simplify-by-decoration $(cat.git/BISECT_START)
+    branch-for-fast-track-set = !git checkout -b feature/fasttrack-`date +%Yw%U` $(git get-master)
     kube-prepare-ns = !git rev-parse --abbrev-ref HEAD | sed -r 's/(feature|dev|hotfix)\\///g'
     kube-namespace-set = !kubectl config set-context --current --namespace=$(git kube-prepare-ns)
-    
     kube-verify-server = !kubectl get ns $(git kube-prepare-ns) -o jsonpath='{.metadata.labels.server}'
-    
-    # Create GitLab Merge Request (Pull Request)
-    parent-branch = "!git show-branch | grep '*' | grep -v \"$(git rev-parse --abbrev-ref HEAD)\" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' #"
-    
+    parent-branch-old = !git name-rev $(git merge-base $(git config --get init.defaultBranch) --fork-point) --name-only | sed 's@remotes/@@' | sed 's@origin/@@' | sed 's@,.*@@'| sed -e s/[~^].*//
+    parent-branch = "!git show-branch | grep '*' | grep -v \\"$(git rev-parse --abbrev-ref HEAD)\\" | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//' #"
     last-commit = "!git log -1 --pretty=%B | sed -E 's/^[[:space:]]+//;s/[[:space:]]+$//'"
-    merge-request = "!echo git push -o merge_request.create -o merge_request.target=${1:-$(git parent-branch)} -o merge_request.remove_source_branch -o merge_request.squash"
-    # -o merge_request.title=\\\"$(git last-commit)\\\"  -- throws "error: src refspec case does not match any"
-    # -o merge_request.squash  -- not work
-	
-    release-log = "!git shortlog --no-merges master --not $(git describe --tags --abbrev=0)"
-
-    remaster = "!git fetch && git rebase origin/master"
+    merge-request = !echo git push -o merge_request.create -o merge_request.target=${1:-$(git parent-branch)} -o merge_request.remove_source_branch -o merge_request.squash
 
