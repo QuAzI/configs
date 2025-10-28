@@ -1,0 +1,31 @@
+# ansible-playbook -i inventory.yaml ubuntu_apt_upgrade.yml
+- name: apt upgrade
+  hosts: ubuntu_servers
+  tags: software
+  become: yes
+  tasks:
+    - name: apt cache update
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        
+    - name: upgrade software
+      ansible.builtin.apt:
+        upgrade: yes   # apt upgrade
+        
+    - name: clean obsoleted
+      ansible.builtin.apt:
+        autoremove: yes
+        autoclean: yes
+
+#- name: pip upgrade
+#  when: false
+#  hosts: ubuntu_servers
+#  tags: python
+#  become: yes
+#  tasks:
+#    - name: upgrade pip
+#      ansible.builtin.pip: 
+#        name: pip
+#        executable: pip3
+#        state: latest

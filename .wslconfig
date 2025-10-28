@@ -1,0 +1,4 @@
+[wsl2] 
+#memory=8192MB   #Limits VM memory in WSL 2
+processors=2    #Makes the WSL 2 VM use limited virtual processors
+guiApplications=false
